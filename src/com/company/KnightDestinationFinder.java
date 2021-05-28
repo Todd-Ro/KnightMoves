@@ -107,5 +107,8 @@ public class KnightDestinationFinder {
         return ret;
     }
 
-    
+    /*
+    TODO: A method that takes the board coordinates of valid knight destinations reachable from a starting point
+    to the relative vectors showing the coordinate shift from the starting point to those valid reachable tiles.
+     */
 }

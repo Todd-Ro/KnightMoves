@@ -40,8 +40,30 @@ public class Main {
         HashSet<Pair> kingTwoClone = (HashSet) kingMovesWithinTwo.clone();
         kingTwoClone.retainAll(withinFourDestinations);
         System.out.println(kingTwoClone.size());
+        System.out.println();
         /*If kingTwoClone.size() equals the previous print, it means all spaces within 2 tiles can be reached within
         four knight moves.
+         */
+
+        /*
+        There are ten types of spaces on a chess board - for example, corner spaces, spaces immediately orthogonally
+        adjacent to corner spaces, the four middle spaces, etc. Of the 64 spaces on a chess board, there are four types
+        of spaces on the main diagonals, of which there are four each, and six types of spaces not on those diagonals,
+        of which there are eight each.
+         */
+
+        BoardSpaceSymmetry bSpace = new BoardSpaceSymmetry();
+        ArrayList<Integer[]> oneEachOfSixNonDTypes = bSpace.exampleSpacesNotOnMainDiagonal();
+        ArrayList<String> nonDgStrings = PrintAids.makeSortedStringsFromArrayListOfIntegerArrays(oneEachOfSixNonDTypes);
+        PrintAids.printStringArrayList(nonDgStrings);
+
+        /*
+        TODO: Verify that all ten types of spaces have all spaces within two tiles accessible within four knight moves
+         */
+
+        /*
+        TODO: Verify that from one of the four middle tiles, within two knight moves, it is possible to reach spaces
+        that collectively hold every space on the board within two spaces of them.
          */
     }
 }
