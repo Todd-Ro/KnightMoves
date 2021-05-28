@@ -2,6 +2,7 @@ package com.company;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class KnightDestinationFinder {
 
@@ -60,4 +61,51 @@ public class KnightDestinationFinder {
         }
         return ret;
     }
+
+    public static HashMap<Pair, Integer> getWithinNKnightMoves (int xStart, int yStart, int nMoves, int offset) {
+        //Offset greater than zero is mainly for recursive calls
+        if (nMoves < 0) {
+            return null;
+        }
+        Pair origin = new Pair(xStart, yStart);
+        HashMap<Pair, Integer> ret = new HashMap<Pair, Integer>();
+        ret.put(origin, 0+offset);
+        if (nMoves > 0) {
+            ArrayList<Integer[]> withinOneMoves = validKnightMoves(xStart, yStart, 0);
+            //Assume index from 0
+            int len = withinOneMoves.size();
+            int i = 0;
+            while (i < len) {
+                Integer[] move = withinOneMoves.get(i);
+                Pair p = new Pair(move[0], move[1]);
+                ret.put(p, 1+offset);
+                i++;
+            }
+
+            if (nMoves > 1) {
+                int j = 0;
+                while (j < len) {
+                    Integer[] move = withinOneMoves.get(j);
+                    Pair p = new Pair(move[0], move[1]);
+                    HashMap<Pair, Integer> thisMovesBranch = getWithinNKnightMoves(
+                            (Integer)p.getKey(), (Integer)p.getValue(), nMoves-1, offset+1);
+                    for (Pair q: thisMovesBranch.keySet()) {
+                        if (!ret.containsKey(q)) {
+                            //Important that equality of Pairs and their hashes works correctly for containsKey check
+                            ret.put(q, thisMovesBranch.get(q));
+                        }
+                        else {
+                            if (thisMovesBranch.get(q) < ret.get(q)) {
+                                ret.replace(q, thisMovesBranch.get(q));
+                            }
+                        }
+                    }
+                    j++;
+                }
+            }
+        }
+        return ret;
+    }
+
+    
 }

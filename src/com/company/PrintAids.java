@@ -1,9 +1,6 @@
 package com.company;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class PrintAids {
 
@@ -45,8 +42,37 @@ public class PrintAids {
         return coordShiftPrint;
     }
 
+    public static ArrayList<String> makeSortedStringsFromSetOfPairs(Set<Pair> destinations) {
+        ArrayList<String> destinationsPrint = new ArrayList<>();
+        int len = 0;
+        for (Pair move : destinations) {
+            String moveString = move.toString();
+            if (destinationsPrint.isEmpty()) {
+                destinationsPrint.add(moveString);
+                len++;
+            } else {
+                int i = 0;
+                boolean added = false;
+                while (i < len) {
+                    if (moveString.compareTo(destinationsPrint.get(i)) < 0) {
+                        destinationsPrint.add(i, moveString);
+                        len++;
+                        added = true;
+                        i += len;
+                    }
+                    i++;
+                }
+                if (added == false) {
+                    destinationsPrint.add(moveString);
+                    len++;
+                }
+            }
+        }
+        return destinationsPrint;
+    }
+
     public static ArrayList<String> makeSortedStringsFromArrayListOfIntegerArrays(ArrayList<Integer[]> vKMs) {
-        ArrayList<String> ret = new ArrayList<String>();
+        ArrayList<String> ret = new ArrayList<>();
         for (Integer[] move:vKMs) {
             String moveString = Arrays.toString(move);
             if (ret.isEmpty()) {
@@ -81,6 +107,13 @@ public class PrintAids {
             /* if (i > 0) {
                 System.out.println(coordShiftPrint.get(i).compareTo(coordShiftPrint.get(i-1)));
             } */
+        }
+    }
+
+    public static void printHashMap (HashMap h) {
+        Set<Object> keys = h.keySet();
+        for (Object key:keys) {
+            System.out.println(key.toString() + ": " + h.get(key));
         }
     }
 

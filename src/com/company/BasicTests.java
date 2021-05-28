@@ -11,7 +11,6 @@ public class BasicTests {
         testPairClass();
         testGetKnightMoves();
         testPossibleKnightMoves();
-        testValidKnightMoves();
     }
 
     public static void testPairClass() {
