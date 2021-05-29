@@ -56,10 +56,26 @@ public class Main {
         ArrayList<Integer[]> oneEachOfSixNonDTypes = bSpace.exampleSpacesNotOnMainDiagonal();
         ArrayList<String> nonDgStrings = PrintAids.makeSortedStringsFromArrayListOfIntegerArrays(oneEachOfSixNonDTypes);
         PrintAids.printStringArrayList(nonDgStrings);
+        System.out.println();
 
-        /*
-        TODO: Verify that all ten types of spaces have all spaces within two tiles accessible within four knight moves
-         */
+        ArrayList<Integer[]> oneEachOfTenTypes = bSpace.allExampleSpaces();
+        for (Integer[] space: oneEachOfTenTypes) {
+            /*
+            Verify that all ten types of spaces have all spaces within two tiles accessible within four knight moves
+             */
+            HashMap<Pair, Integer> withinFourOfSpace = KnightDestinationFinder.getWithinNKnightMoves(
+                    space[0], space[1], 4, 0);
+            Set<Pair> withinFourMoveSpots = withinFourOfSpace.keySet();
+            HashSet<Pair> withinTwoKingMoveSpots = KingMoves.getValidKingMovesWithinN(
+                    2, space[0], space[1], 0);
+            int nWithinTwo = withinTwoKingMoveSpots.size();
+            withinTwoKingMoveSpots.retainAll(withinFourMoveSpots);
+            int nReachableWithinTwo = withinTwoKingMoveSpots.size();
+            //nReachableWithinTwo should equal nWithinTwo if all valid spaces within two are reachable in four moves
+            System.out.println(Arrays.toString(space) + ": " + nWithinTwo + ", " + nReachableWithinTwo);
+        }
+
+
 
         /*
         TODO: Verify that from one of the four middle tiles, within two knight moves, it is possible to reach spaces

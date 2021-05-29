@@ -76,9 +76,16 @@ public class BoardSpaceSymmetry {
         return ret;
     }
 
-    /*
-    TODO: A list of coordinates with one example of each of the ten types of tiles on the board, with their
-    zero-indexed coordinates
-     */
+
+
+    public ArrayList<Integer[]> allExampleSpaces() {
+        /*
+        A list of coordinates with one example of each of the ten types of tiles on the board, with their
+        coordinates indexed by the ones for this BoardSpaceSymmetry
+         */
+        ArrayList<Integer[]> ret = exampleSpacesOnDiagonal();
+        ret.addAll(exampleSpacesNotOnMainDiagonal());
+        return ret;
+    }
 
 }
