@@ -74,12 +74,26 @@ public class Main {
             //nReachableWithinTwo should equal nWithinTwo if all valid spaces within two are reachable in four moves
             System.out.println(Arrays.toString(space) + ": " + nWithinTwo + ", " + nReachableWithinTwo);
         }
+        System.out.println();
 
-
-
+        KnightDestinationFinder.checkReachOfCenterTile(1);
+        KnightDestinationFinder.checkReachOfCenterTile(2);
         /*
-        TODO: Verify that from one of the four middle tiles, within two knight moves, it is possible to reach spaces
-        that collectively hold every space on the board within two spaces of them.
+            Verifies that from one of the four middle tiles, within two knight moves, it is possible to reach spaces
+            that collectively hold every space on the board within two spaces (two king moves) of them.
+        */
+
+        HashMap<Pair, Integer> withinThreeOfCenterMap = KnightDestinationFinder.getWithinNKnightMoves(
+                3,3,3,0);
+        System.out.println(withinThreeOfCenterMap.size());
+        HashMap<Pair, Integer> withinFourOfCenterMap = KnightDestinationFinder.getWithinNKnightMoves(
+                3,3,4,0);
+        System.out.println(withinFourOfCenterMap.size());
+        /*Since this outputs 64, we have proven that all tiles on the board can be reached from a given center tile
+        within four moves. Since the number of moves from tile A to tile B equals the number of moves from B to A,
+        this proves that the maximum number of moves from any tile on the board to any other tile on the board
+        cannot exceed 8.
          */
+
     }
 }

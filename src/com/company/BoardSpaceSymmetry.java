@@ -1,6 +1,8 @@
 package com.company;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BoardSpaceSymmetry {
 
@@ -85,6 +87,28 @@ public class BoardSpaceSymmetry {
          */
         ArrayList<Integer[]> ret = exampleSpacesOnDiagonal();
         ret.addAll(exampleSpacesNotOnMainDiagonal());
+        return ret;
+    }
+
+    public Set<Pair> spacesOnDiagonalHalfOfBoardNotInInputSet(Set<Pair> exclusionSet) {
+        /* Returns all tiles on a particular diagonal, plus all tiles on one side of that diagonal, that are not in the
+        input set.
+        Uses the diagonal from xIndex, yIndex to xIndex+boardSize-1, yIndex+boardSize-1.
+        The half returned is the half of the board with y coordinates greater than or equal to those on the diagonal.
+         */
+        Set<Pair> ret = new HashSet<>();
+            int x = 0;
+            while (x < boardSize) {
+                int y = x;
+                while (y < boardSize) {
+                    Pair p = new Pair(x + xIndex, y + yIndex);
+                    if (!exclusionSet.contains(p)) {
+                        ret.add(p);
+                    }
+                    y++;
+                }
+                x++;
+            }
         return ret;
     }
 

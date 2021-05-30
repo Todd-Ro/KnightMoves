@@ -1,8 +1,6 @@
 package com.company;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 
 public class KnightDestinationFinder {
 
@@ -107,8 +105,26 @@ public class KnightDestinationFinder {
         return ret;
     }
 
+    public static void checkReachOfCenterTile(int nMoves) {
+        HashMap<Pair, Integer> withinNOfCenterMap = KnightDestinationFinder.getWithinNKnightMoves(
+                3,3,nMoves,0);
+        System.out.println(withinNOfCenterMap.size());
+        Set<Pair> withinNOfCenter = withinNOfCenterMap.keySet();
+        System.out.println(withinNOfCenter.size());
+        Set<Pair> withinTwoKingOfOtherMap = new HashSet<Pair>();
+        for (Pair p:withinNOfCenter) {
+            HashSet<Pair> withinTwoOfCurrent = KingMoves.getValidKingMovesWithinN(
+                    2,(Integer)p.getKey(),(Integer)p.getValue(),0);
+            withinTwoKingOfOtherMap.addAll(withinTwoOfCurrent);
+        }
+        System.out.println(withinTwoKingOfOtherMap.size());
+        System.out.println();
+    }
+
     /*
     TODO: A method that takes the board coordinates of valid knight destinations reachable from a starting point
     to the relative vectors showing the coordinate shift from the starting point to those valid reachable tiles.
+    Even if the board coordinates are indexed from zero, the vector from a start tile to a destination tile will differ
+    from the coordinates of the destination tile unless the start tile is the one at (0,0).
      */
 }
