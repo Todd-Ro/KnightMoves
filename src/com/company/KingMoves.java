@@ -6,7 +6,7 @@ public class KingMoves {
 
     public static HashSet<Pair> getValidKingMovesWithinN (int n, int xStart, int yStart, int index) {
         //As always, index is 0 if the edges of the board are handled internally as having coordinate zero
-        HashSet<Pair> ret = new HashSet<Pair>();
+        HashSet<Pair> ret = new HashSet<>();
         int x = xStart - n;
         int y = yStart - n;
         while (x <= xStart + n) {

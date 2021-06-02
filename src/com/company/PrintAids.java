@@ -117,4 +117,21 @@ public class PrintAids {
         }
     }
 
+    public static String printMove(Pair destination, int xIndex, int yIndex, boolean print) {
+        Integer x = (Integer) destination.getKey();
+        Integer y = (Integer) destination.getValue();
+        int printX = x - xIndex + 1;
+        int printY = y - yIndex;
+        String[] letters = new String[] {"a", "b", "c", "d", "e", "f", "g", "h"};
+        // May need more letters if used for boards larger than size 8
+        if (yIndex >= letters.length) {
+            return null;
+        }
+        String ret = "N"+letters[printY]+printX;
+        if (print == true) {
+            System.out.println(ret);
+        }
+        return ret;
+    }
+
 }

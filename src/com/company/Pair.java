@@ -2,46 +2,40 @@ package com.company;
 
 import java.util.*;
 
-public class Pair {
-    // Return a map entry (key-value pair) from the specified values
-    public static <T, U> Map.Entry<T, U> of(T first, U second) {
+public class Pair extends ComparablePair {
+    public static Map.Entry<Integer, Integer> intOf(Integer first, Integer second) {
         return new AbstractMap.SimpleEntry<>(first, second);
     }
 
-    private Map.Entry entry;
-
-    public Pair (Object x, Object y) {
+    public Pair (Integer x, Integer y) {
         Set<Map.Entry> entries = new HashSet<>();
-        entries.add(Pair.of(x, y));
+        entries.add(Pair.intOf(x, y));
         Object[] setArray = entries.toArray();
-        this.entry = (Map.Entry) setArray[0];
+        this.entry = (Map.Entry<Integer, Integer>) setArray[0];
     }
 
-    public Object getKey() {
-        return entry.getKey();
-    }
-    public Object getValue() {
-        return entry.getValue();
+    public Pair (int x, int y) {
+        Set<Map.Entry> entries = new HashSet<>();
+        Integer xInte = Integer.valueOf(x);
+        Integer yInte = Integer.valueOf(y);
+        entries.add(Pair.intOf(xInte, yInte));
+        Object[] setArray = entries.toArray();
+        this.entry = (Map.Entry<Integer, Integer>) setArray[0];
     }
 
-
-    @Override
-    public boolean equals(Object o)
-    {
-        if (o instanceof Pair) {
-            Pair pair = (Pair) o;
-            return ( (entry.getKey().equals(pair.getKey())) && (entry.getValue().equals(pair.getValue())) );
+    /* public int compareTo(Pair p) {
+        // Returns comparison of keys if not zero, otherwise comparison of values.
+        int keyComp = getKey().compareTo(p.getKey());
+        if (keyComp != 0) {
+            return keyComp;
         }
-        return false;
+        else {
+            Integer value = (Integer) getValue();
+            Integer pValue = (Integer) p.getValue();
+            return value.compareTo(pValue);
+        }
     }
+    */
 
-    @Override
-    public int hashCode() {
-            return Objects.hash(entry.getKey(), entry.getValue());
-    }
 
-    @Override
-    public String toString() {
-            return String.format( "(" +entry.getKey().toString() + ", " + entry.getValue().toString() + ")" );
-    }
 }

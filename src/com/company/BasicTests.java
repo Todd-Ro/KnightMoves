@@ -54,4 +54,17 @@ public class BasicTests {
         PrintAids.printStringArrayList(validMovesStrings);
         System.out.println();
     }
+
+    public static void testPairClassMore() {
+        Pair testOne = new Pair(1, 7);
+        Pair testTwo = new Pair(2, 0);
+        Pair testThree = new Pair(2, 1);
+        Integer One = 1;
+        Integer Two = 2;
+        System.out.println(One.compareTo(2));
+        System.out.println(testTwo.getKey());
+        System.out.println(testOne.getKey().compareTo(testTwo.getKey()));
+        System.out.println(testOne.compareTo(testTwo));
+        System.out.println(testTwo.compareTo(testThree));
+    }
 }

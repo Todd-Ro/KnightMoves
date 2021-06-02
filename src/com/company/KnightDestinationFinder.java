@@ -61,12 +61,14 @@ public class KnightDestinationFinder {
     }
 
     public static HashMap<Pair, Integer> getWithinNKnightMoves (int xStart, int yStart, int nMoves, int offset) {
-        //Offset greater than zero is mainly for recursive calls
+        /*Offset greater than zero increases the reported number of moves to get to a tile
+        and is mainly for recursive calls
+         */
         if (nMoves < 0) {
             return null;
         }
         Pair origin = new Pair(xStart, yStart);
-        HashMap<Pair, Integer> ret = new HashMap<Pair, Integer>();
+        HashMap<Pair, Integer> ret = new HashMap<>();
         ret.put(origin, 0+offset);
         if (nMoves > 0) {
             ArrayList<Integer[]> withinOneMoves = validKnightMoves(xStart, yStart, 0);
@@ -105,7 +107,82 @@ public class KnightDestinationFinder {
         return ret;
     }
 
-    public static void checkReachOfCenterTile(int nMoves) {
+    public static HashMap<Pair, ComparablePair<Integer, ArrayList<Pair>>> getWithinNKnightMovesWithPath (
+            int xStart, int yStart, int nMoves, int offset
+    ) {
+        /*Returns a HashMap with keys that are the tiles reachable from the one at (xStart, yStart)
+        and values mapped to those keys that have the minimum number of moves to get there, then an example path to
+        get there in that many moves.
+        The example path includes the start tile (even if it is the destination) but not the destination.
+         */
+        /*Offset greater than zero increases the reported number of moves to get to a tile
+        and is mainly for recursive calls.
+        Recall that the number of spaces to get somewhere is the integer that is the first item in the ComparablePair
+        that is the value in the HashMap.
+        Thus, the number of moves to get somewhere is the Integer for x in a ComparablePair,
+        NOT the Integer arrays from validKnightMoves.
+         */
+        if (nMoves < 0) {
+            return null;
+        }
+        Pair origin = new Pair(xStart, yStart);
+        HashMap<Pair, ComparablePair<Integer, ArrayList<Pair>>> ret = new HashMap<>();
+        ArrayList<Pair> toBegin = new ArrayList();
+        toBegin.add(origin);
+        ComparablePair<Integer, ArrayList<Pair>> originPoint = new ComparablePair<>(0+offset, toBegin);
+        ret.put(origin, originPoint);
+        if (nMoves > 0) {
+            ArrayList<Integer[]> withinOneMoves = validKnightMoves(xStart, yStart, 0);
+            //Assume index from 0
+            int len = withinOneMoves.size();
+            int i = 0;
+            while (i < len) {
+                Integer[] move = withinOneMoves.get(i);
+                Pair p = new Pair(move[0], move[1]);
+                ComparablePair<Integer, ArrayList<Pair>> oneStep = new ComparablePair<>(1+offset, toBegin);
+                ret.put(p, oneStep);
+                i++;
+            }
+
+            if (nMoves > 1) {
+                int j = 0;
+                while (j < len) {
+                    Integer[] move = withinOneMoves.get(j);
+                    Pair p = new Pair(move[0], move[1]);
+                    HashMap<Pair, ComparablePair<Integer, ArrayList<Pair>>> thisMovesBranch =
+                            getWithinNKnightMovesWithPath(
+                            (Integer)p.getKey(), (Integer)p.getValue(), nMoves-1, offset+1);
+                    for (Pair q: thisMovesBranch.keySet()) {
+                        if (!ret.containsKey(q)) {
+                            //Important that equality of Pairs and their hashes works correctly for containsKey check
+                            ComparablePair<Integer, ArrayList<Pair>> thisHashValue = thisMovesBranch.get(q);
+                            Integer stepCount = (Integer) thisHashValue.getKey();
+                            ArrayList<Pair> thisPathList = (ArrayList<Pair>) thisHashValue.getValue();
+                            if (thisPathList.get(0).equals(origin) == false) {
+                                thisPathList.add(0, origin);
+                            }
+
+                            thisHashValue = new ComparablePair<>(stepCount, thisPathList);
+                            ret.put(q, thisHashValue);
+                        }
+                        else {
+                            Integer qMovesNeeded = (Integer)thisMovesBranch.get(q).getKey();
+                            if ( qMovesNeeded < ( (Integer)ret.get(q).getKey() ) ) {
+                                ArrayList<Pair> a = (ArrayList<Pair>) thisMovesBranch.get(q).getValue();
+                                a.add(0, origin);
+                                ComparablePair<Integer, ArrayList<Pair>> qInfo = new ComparablePair<>(qMovesNeeded, a);
+                                ret.replace(q, qInfo);
+                            }
+                        }
+                    }
+                    j++;
+                }
+            }
+        }
+        return ret;
+    }
+
+    public static void checkReachOfCenterTile(int nMoves, BoardSpaceSymmetry bSpace) {
         HashMap<Pair, Integer> withinNOfCenterMap = KnightDestinationFinder.getWithinNKnightMoves(
                 3,3,nMoves,0);
         System.out.println(withinNOfCenterMap.size());
@@ -118,6 +195,12 @@ public class KnightDestinationFinder {
             withinTwoKingOfOtherMap.addAll(withinTwoOfCurrent);
         }
         System.out.println(withinTwoKingOfOtherMap.size());
+        Set<Pair> notCovered = bSpace.spacesOnDiagonalHalfOfBoardNotInInputSet(withinTwoKingOfOtherMap);
+        System.out.println(notCovered.size());
+        if (notCovered.size() > 0) {
+            ArrayList<String> notCoveredText = PrintAids.makeSortedStringsFromSetOfPairs(notCovered);
+            PrintAids.printStringArrayList(notCoveredText);
+        }
         System.out.println();
     }
 
@@ -127,4 +210,38 @@ public class KnightDestinationFinder {
     Even if the board coordinates are indexed from zero, the vector from a start tile to a destination tile will differ
     from the coordinates of the destination tile unless the start tile is the one at (0,0).
      */
+
+    /*
+    TODO: A version of getWithinNKnightMoves that includes an example path to get to each destination
+    in the shortest possible number of moves.
+    This could be a HashMap from a Pair to a ComparablePair with an Integer then an array or Arraylist of int arrays
+    or Pairs.
+     */
+
+    public static void testOutputType() {
+        HashMap<Pair, ComparablePair> testHash = new HashMap<>();
+        Pair duoQuat = new Pair(2, 4);
+        Pair hexdex = new Pair(6, 6);
+        ArrayList<Pair> steps = new ArrayList<>();
+        steps.add(new Pair(4, 5));
+        Integer Two = 2;
+        Integer Zero = 0;
+        ComparablePair testComp = new ComparablePair<Integer, ArrayList>(Two, steps);
+        ArrayList<Pair> noSteps = new ArrayList<Pair>();
+        ComparablePair zeroComp = new ComparablePair<Integer, ArrayList>(Zero, noSteps);
+        testHash.put(duoQuat, zeroComp);
+        testHash.put(hexdex, testComp);
+        for (Pair p: testHash.keySet()) {
+            ComparablePair cp = testHash.get(p);
+            System.out.println(p.toString() + ": " + cp.getKey().toString());
+        }
+        System.out.println();
+        System.out.println(Two.compareTo(Zero));
+        System.out.println(testComp.compareTo(zeroComp));
+        //Imagine duoQuat is calling a method that traces the path to hexdex and to itself.
+    }
+
+
+
+
 }

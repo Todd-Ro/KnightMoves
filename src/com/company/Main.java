@@ -76,8 +76,8 @@ public class Main {
         }
         System.out.println();
 
-        KnightDestinationFinder.checkReachOfCenterTile(1);
-        KnightDestinationFinder.checkReachOfCenterTile(2);
+        KnightDestinationFinder.checkReachOfCenterTile(1, bSpace);
+        KnightDestinationFinder.checkReachOfCenterTile(2, bSpace);
         /*
             Verifies that from one of the four middle tiles, within two knight moves, it is possible to reach spaces
             that collectively hold every space on the board within two spaces (two king moves) of them.
@@ -86,6 +86,11 @@ public class Main {
         HashMap<Pair, Integer> withinThreeOfCenterMap = KnightDestinationFinder.getWithinNKnightMoves(
                 3,3,3,0);
         System.out.println(withinThreeOfCenterMap.size());
+        Set<Pair> notWithinThreeOnUpperHalfOfBoard =
+                bSpace.spacesOnDiagonalHalfOfBoardNotInInputSet(withinThreeOfCenterMap.keySet());
+        ArrayList<String> notCoveredText = PrintAids.makeSortedStringsFromSetOfPairs(notWithinThreeOnUpperHalfOfBoard);
+        PrintAids.printStringArrayList(notCoveredText);
+        //notCoveredText has three spots on main diagonal, plus one other space that is mirrored on the other side
         HashMap<Pair, Integer> withinFourOfCenterMap = KnightDestinationFinder.getWithinNKnightMoves(
                 3,3,4,0);
         System.out.println(withinFourOfCenterMap.size());
@@ -94,6 +99,29 @@ public class Main {
         this proves that the maximum number of moves from any tile on the board to any other tile on the board
         cannot exceed 8.
          */
+        System.out.println();
 
+        BasicTests.testPairClassMore();
+        System.out.println();
+
+        KnightDestinationFinder.testOutputType();
+        System.out.println();
+        System.out.println();
+
+        HashMap<Pair, ComparablePair<Integer, ArrayList<Pair>>> threeThreePath =
+                KnightDestinationFinder.getWithinNKnightMovesWithPath(3, 3, 3, 0);
+        for (Pair p: threeThreePath.keySet()) {
+            System.out.println(p.toString() + ": " + threeThreePath.get(p).getKey().toString() + " move(s) required");
+            for (Pair q: (ArrayList<Pair>) threeThreePath.get(p).getValue()) {
+                System.out.println(q.toString());
+            }
+            System.out.println();
+        }
+
+        System.out.println();
+        System.out.println();
+
+        Pair onZro = new Pair(1+1, 0+2);
+        System.out.println(PrintAids.printMove(onZro, 0, 0, false)); // Should print "Nc3"
     }
 }
