@@ -123,5 +123,21 @@ public class Main {
 
         Pair onZro = new Pair(1+1, 0+2);
         System.out.println(PrintAids.printMove(onZro, 0, 0, false)); // Should print "Nc3"
+        System.out.println();
+
+        for (Integer[] space: oneEachOfTenTypes) {
+            /*
+            Verify how many spaces each of the ten types of space has within one move
+             */
+            HashMap<Pair, Integer> withinOneOfSpace = KnightDestinationFinder.getWithinNKnightMoves(
+                    space[0], space[1], 1, 0);
+            Set<Pair> withinOneMoveSpots = withinOneOfSpace.keySet();
+            System.out.println(Arrays.toString(space) + ": " + (Integer) (withinOneMoveSpots.size()-1)
+                    + " k-adjacent");
+            //Subtract one because each set includes the space itself
+        }
+        System.out.println();
     }
+
+
 }

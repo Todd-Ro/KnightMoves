@@ -110,7 +110,12 @@ public class KnightDestinationFinder {
     public static HashMap<Pair, ComparablePair<Integer, ArrayList<Pair>>> getWithinNKnightMovesWithPath (
             int xStart, int yStart, int nMoves, int offset
     ) {
-        /*Returns a HashMap with keys that are the tiles reachable from the one at (xStart, yStart)
+        /*A version of getWithinNKnightMoves that includes an example path to get to each destination
+        in the shortest possible number of moves.
+        A HashMap from a Pair to a ComparablePair with an Integer then an Arraylist
+        of Pairs.
+
+        Returns a HashMap with keys that are the tiles reachable from the one at (xStart, yStart)
         and values mapped to those keys that have the minimum number of moves to get there, then an example path to
         get there in that many moves.
         The example path includes the start tile (even if it is the destination) but not the destination.
@@ -206,16 +211,10 @@ public class KnightDestinationFinder {
 
     /*
     TODO: A method that takes the board coordinates of valid knight destinations reachable from a starting point
-    to the relative vectors showing the coordinate shift from the starting point to those valid reachable tiles.
+    and outputs the relative vectors showing the coordinate shift from the starting point
+    to those valid reachable tiles.
     Even if the board coordinates are indexed from zero, the vector from a start tile to a destination tile will differ
     from the coordinates of the destination tile unless the start tile is the one at (0,0).
-     */
-
-    /*
-    TODO: A version of getWithinNKnightMoves that includes an example path to get to each destination
-    in the shortest possible number of moves.
-    This could be a HashMap from a Pair to a ComparablePair with an Integer then an array or Arraylist of int arrays
-    or Pairs.
      */
 
     public static void testOutputType() {
