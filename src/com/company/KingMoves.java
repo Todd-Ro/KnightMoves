@@ -2,7 +2,7 @@ package com.company;
 
 import java.util.HashSet;
 
-public class KingMoves {
+public abstract class KingMoves {
 
     public static HashSet<Pair> getValidKingMovesWithinN (int n, int xStart, int yStart, int index) {
         //As always, index is 0 if the edges of the board are handled internally as having coordinate zero

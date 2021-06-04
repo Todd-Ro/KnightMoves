@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
-public class BasicTests {
+public abstract class BasicTests {
 
     public static void runBasicTests() {
         // Produces outputs that can be examined to verify how certain aspects of the program work

@@ -2,7 +2,7 @@ package com.company;
 
 import java.util.*;
 
-public class PrintAids {
+public abstract class PrintAids {
 
     public static Set<int[]> makeSetFromIntArrayArray (int[][] moves) {
         //May remove duplicate elements

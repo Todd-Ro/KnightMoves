@@ -1,8 +1,6 @@
 package com.company;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class BoardSpaceSymmetry {
 
@@ -12,12 +10,27 @@ public class BoardSpaceSymmetry {
     int xMax;
     int yMax;
 
+    private final Set<Pair> allTiles;
+    private Set<Pair> notVisited;
+
+    public Set<Pair> getAllTiles() {
+        if (allTiles.isEmpty()) {
+            generateAllTiles();
+        }
+        return allTiles;
+    }
+
+    public void visit(Pair p) {
+        this.notVisited.remove(p);
+    }
+
     public BoardSpaceSymmetry() {
         this.boardSize = 8;
         this.xIndex = 0;
         this.yIndex = 0;
         this.xMax = 7;
         this.yMax = 7;
+        this.allTiles = generateAllTiles();
     }
 
     public BoardSpaceSymmetry(int boardSize, int xIndex, int yIndex) {
@@ -26,6 +39,7 @@ public class BoardSpaceSymmetry {
         this.yIndex = yIndex;
         this.xMax = xIndex + boardSize - 1;
         this.yMax = yIndex + boardSize - 1;
+        this.allTiles = generateAllTiles();
     }
 
     public int getBoardSize() {
@@ -43,6 +57,28 @@ public class BoardSpaceSymmetry {
     public int getyMax() {
         return yMax;
     }
+
+    public Set<Pair> getNotVisited() {
+        return notVisited;
+    }
+
+    public final Set<Pair> generateAllTiles() {
+        Set<Pair> ret = new HashSet();
+        int x = getxIndex();
+        while (x <= xMax) {
+            int y = getyIndex();
+            while (y <= yMax) {
+                ret.add(new Pair(x, y));
+                y++;
+            }
+            x++;
+        }
+        Set<Pair> notVisitedTiles = new HashSet();
+        notVisitedTiles.addAll(ret);
+        this.notVisited = notVisitedTiles;
+        return ret;
+    }
+
 
     public boolean isSpaceOnDiagonal (int xCoord, int yCoord) {
         if ((xCoord - getxIndex()) == (yCoord - getyIndex())) {
@@ -111,5 +147,57 @@ public class BoardSpaceSymmetry {
             }
         return ret;
     }
+
+    public void refreshResetNotVisited() {
+        this.notVisited = getAllTiles();
+    }
+
+    public static Pair findNearestCorner(Pair p, BoardSpaceSymmetry b) {
+        int x = (Integer) p.getKey();
+        int y = (Integer) p.getValue();
+        int xAdj = x - b.getxIndex();
+        int yAdj = y - b.getyIndex();
+        boolean rightHalf = (xAdj > (b.getBoardSize()/2));
+        boolean topHalf = (yAdj > (b.getBoardSize()/2));
+        Integer cornerX;
+        Integer cornerY;
+        if (rightHalf) {
+            cornerX = b.getxMax();
+        }
+        else {
+            cornerX = b.getxIndex();
+        }
+        if (topHalf) {
+            cornerY = b.getyMax();
+        }
+        else {
+            cornerY = b.getyIndex();
+        }
+
+        return new Pair(cornerX, cornerY);
+    }
+
+    static int distance(Pair p, Pair comparison) {
+        //Distance is basically a multiple of manhattan distance that gives slightly higher weight to x differences
+        int ret = 0;
+        ret += 8*Math.abs((Integer)p.getKey() - (Integer)comparison.getKey());
+        ret += 7*Math.abs((Integer)p.getKey() - (Integer)comparison.getKey());
+        return ret;
+    }
+
+    public static Pair pickBest(Set<Pair> candSet, Pair compCorner) {
+        HashMap<Integer, Pair> distances = new HashMap();
+        for (Pair p:candSet) {
+            distances.put(distance(p, compCorner),p);
+        }
+        /*On an 8x8 board, there shouldn't be any distance ties from a corner with how distance is defined,
+        but if there were, an entry in distances could get overridden.
+        This is fine if we do not need a tiebreaker since we still get one of the tied entries returned.
+         */
+        Collection<Integer> keys = distances.keySet();
+        int lowest = Collections.min(keys);
+        return distances.get(lowest);
+    }
+
 
 }

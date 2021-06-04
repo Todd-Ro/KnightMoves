@@ -2,7 +2,7 @@ package com.company;
 
 import java.util.*;
 
-public class KnightDestinationFinder {
+public abstract class KnightDestinationFinder {
 
     public static int[][] getKnightMoves() {
         int[][] ret = new int[8][2];
@@ -58,6 +58,32 @@ public class KnightDestinationFinder {
             i++;
         }
         return ret;
+    }
+
+    public static Set<Pair> validMovesWithinOneNotIncludingSelf(Pair p, BoardSpaceSymmetry b) {
+        Set<Pair> ret = new HashSet<>();
+        int[][] candidates = possibleKnightMoves((Integer) p.getKey(), (Integer) p.getValue());
+        int i = 0;
+        while (i < 8) {
+            Integer[] candidate = makeIntArrayNonPrimitive(candidates[i]);
+            if (candidate[0] >= b.getxIndex()) {
+                if (candidate[0] <= b.getxMax()) {
+                    if (candidate[1] >= b.getyIndex()) {
+                        if (candidate[1] <= b.getyMax()) {
+                            ret.add(new Pair(candidate[0], candidate[1]));
+                        }
+                    }
+                }
+            }
+            i++;
+        }
+        return ret;
+    }
+
+    public static Set<Pair> validMovesNotYetTaken(Pair p, BoardSpaceSymmetry b) {
+        Set<Pair> withinOne = validMovesWithinOneNotIncludingSelf(p, b);
+        withinOne.retainAll(b.getNotVisited());
+        return withinOne;
     }
 
     public static HashMap<Pair, Integer> getWithinNKnightMoves (int xStart, int yStart, int nMoves, int offset) {
@@ -209,13 +235,20 @@ public class KnightDestinationFinder {
         System.out.println();
     }
 
-    /*
-    TODO: A method that takes the board coordinates of valid knight destinations reachable from a starting point
-    and outputs the relative vectors showing the coordinate shift from the starting point
-    to those valid reachable tiles.
-    Even if the board coordinates are indexed from zero, the vector from a start tile to a destination tile will differ
-    from the coordinates of the destination tile unless the start tile is the one at (0,0).
-     */
+    public static ArrayList<Pair> vectorsToReachCoordinates(ArrayList<Pair> destinations, int xStart, int yStart) {
+        /*
+        A method that takes the board coordinates of valid knight destinations reachable from a starting point
+        and outputs the relative vectors showing the coordinate shift from the starting point
+        to those valid reachable tiles.
+        Even if the board coordinates are indexed from zero, the vector from a start tile to a destination tile will
+        differ from the coordinates of the destination tile unless the start tile is the one at (0,0).
+         */
+        ArrayList<Pair> ret = new ArrayList();
+        for (Pair p:destinations) {
+            ret.add(new Pair((Integer) p.getKey() - xStart, (Integer) p.getValue()-yStart));
+        }
+        return ret;
+    }
 
     public static void testOutputType() {
         HashMap<Pair, ComparablePair> testHash = new HashMap<>();
@@ -239,6 +272,50 @@ public class KnightDestinationFinder {
         System.out.println(testComp.compareTo(zeroComp));
         //Imagine duoQuat is calling a method that traces the path to hexdex and to itself.
     }
+
+
+    public static Pair nextMove(Pair p, BoardSpaceSymmetry b, Pair compCorner) {
+        //Returns the next move for our pathfinding program
+        b.visit(p);
+        Set<Pair> finalists = new HashSet();
+        Set<Pair> validMovesNotYetTaken = validMovesNotYetTaken(p, b);
+        if (validMovesNotYetTaken.isEmpty()) {
+            return null;
+        }
+        int minNeighbors = 7;
+        /*Since this space is visited, the spaces k-adjacent to it wil have 7 or fewer un-visited neighbors.
+        We will find the one(s) with the fewest as finalists.
+        */
+        for (Pair pNext:validMovesNotYetTaken) {
+            int options = validMovesNotYetTaken(pNext, b).size();
+            if (options < minNeighbors) {
+                finalists.clear();
+                finalists.add(pNext);
+                minNeighbors = options;
+            }
+            else if (options == minNeighbors) {
+                finalists.add(pNext);
+            }
+        }
+        return BoardSpaceSymmetry.pickBest(finalists, compCorner);
+    }
+
+    public static ArrayList<Pair> thePath(int xStart, int yStart, BoardSpaceSymmetry b) {
+        //Together with nextMove, this is the heart of our pathfinding determination
+        b.refreshResetNotVisited();
+        Pair start = new Pair(xStart, yStart);
+        Pair compCorner = b.findNearestCorner(start, b);
+        ArrayList<Pair> ret = new ArrayList();
+        Pair thisPair = start;
+        while (thisPair != null) {
+            ret.add(thisPair);
+            thisPair = nextMove(thisPair, b, compCorner);
+        }
+        return ret;
+    }
+
+
+
 
 
 

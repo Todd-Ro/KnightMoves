@@ -137,7 +137,24 @@ public class Main {
             //Subtract one because each set includes the space itself
         }
         System.out.println();
+
+        /*bSpace.visit(new Pair(1, 0));
+        System.out.println(bSpace.getNotVisited().size());
+        System.out.println(bSpace.getAllTiles().size());*/
+        // Test visit method
+
+        System.out.println("And now, the moment you've all been waiting for...");
+        System.out.println();
+        ArrayList<Pair> theKnightPath = KnightDestinationFinder.thePath(1, 0, bSpace);
+        System.out.println(theKnightPath.size());
+        System.out.println();
+        for (Pair p:theKnightPath) {
+            System.out.println(p.toString());
+        }
+        System.out.println();
+        Set<Pair> allTilesInPath = new HashSet(theKnightPath);
+        System.out.println(allTilesInPath.size());
+
+
     }
-
-
 }
